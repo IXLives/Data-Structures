@@ -15,9 +15,8 @@ class LRUCache:
     def __init__(self, limit=10):
         self.size = 0
         self.limit = limit
-        self.storage = DoublyLinkedList()
-        self.fast_dict = {}
-
+        self.storage = dict()
+        self.order = DoublyLinkedList()
     """
     Retrieves the value associated with the given key. Also
     needs to move the key-value pair to the end of the order
@@ -28,11 +27,16 @@ class LRUCache:
 
     def get(self, key):
         # if in cache
-        # move to head
+        # move to head (find key in order structure, move to head)
         # return value
         # if not in cache
         # return none
-        pass
+        if key in self.storage:
+            node = self.storage[key]
+            self.order.move_to_front(node)
+            return node.value[1]
+        else:
+            return None
 
     """
     Adds the given key-value pair to the cache. The newly-
@@ -46,7 +50,18 @@ class LRUCache:
     """
 
     def set(self, key, value):
-        # check size of cache
-        # if cache is > 10 remove from tail
-        # add value to head
-        pass
+        # update the node value if node already exists
+        if key in self.storage:
+            node = self.storage[key]
+            node.value = (key, value)
+            self.order.move_to_front(node)
+            return
+        # if size limit has been reached, remove least used element
+        if self.size == self.limit:
+            del self.storage[self.order.tail.value[0]]
+            self.order.remove_from_tail()
+            self.size -= 1
+
+        self.order.add_to_head((key, value))
+        self.storage[key] = self.order.head
+        self.size += 1

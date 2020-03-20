@@ -95,6 +95,9 @@ class BinarySearchTree:
         # while q is not empty
         # add current node's children to q
         # pop current node
+        node_queue = Queue()
+        curNode = node
+        node_queue.enqueue(curNode.value)
         pass
 
     # Print the value of every node, starting with the given node,
@@ -106,17 +109,45 @@ class BinarySearchTree:
         # push left value of current node if we can
         # print current value and pop it off
         # push the right value of current node if we can
+        # init stack
         node_stack = Stack()
-        print(node.value)
-        while node.left:
-            print(node.left.value)
-        while node.right:
-            print(node.right.value)
+        curNode = node
+
+        while True:
+            # this reaches the left most node of the current node
+            if curNode is not None:
+                # add node to stack as pointer before traversing to left
+                node_stack.push(curNode)
+                # set current node to its left child until its left child is none
+                curNode = curNode.left
+            # if stack is not empty
+            elif node_stack.len() > 0:
+                # pop current node before we check its right children
+                curNode = node_stack.pop()
+                # print
+                print(curNode.value)
+                # go right until there is no more right
+                curNode = curNode.right
+            else:
+                # if curnode is none and no other conditions are true we are done
+                break
+        # first pass below
+        # while node_stack.len() > 0:
+        #     if curNode.left:
+        #         leftNode = curNode.left
+        #         node_stack.push(leftNode.value)
+        #         curNode = leftNode
+        #     print(node_stack.pop())
+        #     if curNode.right:
+        #         rightNode = curNode.right
+        #         node_stack.push(rightNode.value)
+        #         curNode = rightNode
 
     # STRETCH Goals -------------------------
     # Note: Research may be required
 
     # Print Pre-order recursive DFT
+
     def pre_order_dft(self, node):
         pass
 
@@ -134,4 +165,4 @@ bst.insert(3)
 bst.insert(4)
 bst.insert(2)
 
-bst.in_order_print(bst)
+bst.dft_print(bst)
